@@ -25,10 +25,10 @@ If you can now type "git-version" to obtain the help page you have succeeded.
 
 # Example Usage (Wordpress)
 * Say your target site has left the license.txt file at the web root.
-* download it: wget http://targetsite.com/license.txt
+* download it: `wget http://targetsite.com/license.txt`
 * By default that will save "license.txt" into your current directory
 * clone the git repo for your target (in this case WordPress)
-* git clone https://github.com/WordPress/WordPress.git
+* `git clone https://github.com/WordPress/WordPress.git`
 * This will create a directory "WordPress" in the current directory
 * execute git-version as shown below:
 
@@ -62,11 +62,11 @@ Bit of an explanation on the reasoning of the file choices:
 * image files - can change in minor ways across versions.
 
 You need to locate a list of files to retrive from your target, and then download the files. To do this:
-* cd WordPress # get into the cloned repository
-* find . -name '*.txt' >> ./txt-files.txt # locate files from the current dir with the name *.txt and save each result
-* find . -name '*.inc' >> ./inc-files.txt # same for inc files
+* `cd WordPress` # get into the cloned repository
+* `find . -name '*.txt' >> ./txt-files.txt` # locate files from the current dir with the name *.txt and save each result
+* `find . -name '*.inc' >> ./inc-files.txt` # same for inc files
 * repeat for any other file extensions that you know will work.
-* cd .. # get yourself back to a directory outside your local git repo folder
+* `cd ..` # get yourself back to a directory outside your local git repo folder
 * Use a bash for loop to download every file possible from your target site:
 <pre>
 for i in `cat txt-files.txt`; do wget https://targetsite/$i; done
