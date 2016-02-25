@@ -34,8 +34,6 @@ If you can now type "git-version" to obtain the help page you have succeeded.
 
 <pre>
 git-version.py license.txt WordPress/
-Found git folder: WordPress/.git
-Checking that file license.txt exists in the repo within WordPress/
 1)	./wp-includes/images/crystal/license.txt
 2)	./wp-includes/js/swfupload/license.txt
 3)	./wp-includes/js/plupload/license.txt
@@ -46,22 +44,40 @@ Checking that file license.txt exists in the repo within WordPress/
 8)	./license.txt
 0) exit
 Multiple files in repo with that name. Enter a number: 8
-User chose path: ./license.txt
-Fetch URL: https://github.com/WordPress/WordPress.git
-Using URL: https://raw.githubusercontent.com/WordPress/WordPress/
-Getting MD5 hash for target file
-MD5(license.txt):b7d6694302f24cbe13334dfa6510fd02
-Checking log for license.txt
-=========================
-Match found!
-Raw URL: https://raw.githubusercontent.com/WordPress/WordPress/3c9a06672ebaec21847e4917e1086d9b9274ab6b/./license.txt
-Context URL: https://github.com/WordPress/WordPress/blob/3c9a06672ebaec21847e4917e1086d9b9274ab6b/./license.txt
-Found at 6 of 13 commits of that file 
-If it is '1 of 32' then you have the latest version of the file
-If it is '30 of 32' then you have a very early version of the file
+Found at [6/13]: https://github.com/WordPress/WordPress/blob/3c9a06672ebaec21847e4917e1086d9b9274ab6b/./license.txt
 </pre>
 
 In this case the target license version was outdated!
 
-Have fun with using this for more exciting web accessible files.
+# Enumerating a target site
 
+You need to find web servable files such as; `*.txt`, `*.inc`, `*.js`, `*.css`, `*.png`, `*.gif` etc
+The only thing that is important is that the content you download is not dynamically generated. You will
+get nowhere if you are trying to find "php" files etc.
+
+Bit of an explanation on the reasoning of the file choices:
+
+* txt files - are good for licenses, and readme files. The license should let you find the YEAR the target was updated.
+* js files - can change more frequently for sites relying on heavy use of js.
+* image files - can change in minor ways across versions.
+
+You need to locate a list of files to retrive from your target, and then download the files. To do this:
+* cd WordPress # get into the cloned repository
+* find . -name '*.txt' >> ./txt-files.txt # locate files from the current dir with the name *.txt and save each result
+* find . -name '*.inc' >> ./inc-files.txt # same for inc files
+* repeat for any other file extensions that you know will work.
+* cd .. # get yourself back to a directory outside your local git repo folder
+* Use a bash for loop to download every file possible from your target site:
+<pre>
+for i in `cat txt-files.txt`; do wget https://www.erasmusplus.org.uk/$i; done
+</pre>
+* some files may have been removed by a crafty admin removing "unnecessary content". Ignore the 404s
+* your current directory should be full of many *.txt files
+* Use a bash for loop to then run git-version against each file
+<pre>
+for f in `ls -a *.txt | cat`; do git-version.py $f WordPress/; done
+</pre>
+
+# Dislaimer
+
+For research purposes only, do not use this on any target which you do not have permission to do so.
