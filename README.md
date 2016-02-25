@@ -69,7 +69,7 @@ You need to locate a list of files to retrive from your target, and then downloa
 * cd .. # get yourself back to a directory outside your local git repo folder
 * Use a bash for loop to download every file possible from your target site:
 <pre>
-for i in `cat txt-files.txt`; do wget https://www.erasmusplus.org.uk/$i; done
+for i in `cat txt-files.txt`; do wget https://targetsite/$i; done
 </pre>
 * some files may have been removed by a crafty admin removing "unnecessary content". Ignore the 404s
 * your current directory should be full of many *.txt files
