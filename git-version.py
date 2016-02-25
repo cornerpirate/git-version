@@ -25,6 +25,7 @@ from argparse import ArgumentParser
 
 # Ok, globals make me feel bad. Sue me.
 gitfolder=None
+args=None
 
 # taken from http://stackoverflow.com/questions/11210104/check-if-a-program-exists-from-a-python-script
 def isToolInstalled(name):
@@ -33,14 +34,16 @@ def isToolInstalled(name):
     from distutils.spawn import find_executable
     return find_executable(name) is not None
 
-def wgetFile(url):
-	print "a"
+# if verbosity is enabled, print that thing
+def printv(msg):
+	if args.verbose:
+		print msg
 
 # get on with the task
 def doTheThing():
-	print "Found git folder: " + gitfolder
+	printv( "Found git folder: " + gitfolder)
 	# check that target file exists
-	print "Checking that file " + args.file + " exists in the repo within " + args.gitdir
+	printv( "Checking that file " + args.file + " exists in the repo within " + args.gitdir)
 	cmd = "(cd "  + gitfolder + "; cd .. ; find .  -name " + args.file + ")"
 	answer = commands.getoutput(cmd)
 	path = answer[2:]
@@ -80,13 +83,13 @@ def doTheThing():
 				a="a" # do nothing
 
 		path = answer.split()[answerid-1]
-		print "User chose path: " + path
+		printv( "User chose path: " + path)
 
 
 	# Get the remote URL for the git repo
 	cmd = "(cd " + gitfolder + "; cd .. ;  git remote show origin | grep Fetch | cut -d \" \" -f 5)"
         answer = commands.getoutput(cmd)
-        print "Fetch URL: " + answer
+        printv( "Fetch URL: " + answer)
 
 	# Some repo fetch URLs have ".git" at the end. Some do not. Cope with that
 	url=""
@@ -103,23 +106,23 @@ def doTheThing():
 
 	# We need the raw output which is a flip of hostnames to achieve
 	url = url.replace("github.com", "raw.githubusercontent.com")
-	print "Using URL: " + url
+	printv( "Using URL: " + url)
 
 	# Compute the md5 of our users target file
-	print "Getting MD5 hash for target file"
+	printv( "Getting MD5 hash for target file")
 	cmd = "md5sum " + args.file + " | cut -d \" \" -f 1"  
 	answer = commands.getoutput(cmd)
 	md5 = answer
-	print "MD5(" + args.file + "):" + md5
+	printv( "MD5(" + args.file + "):" + md5)
 	
 	# we got here so a file with the same name exists, lets get cracking!
-	print "Checking log for " + args.file
+	printv( "Checking log for " + args.file)
 	cmd = "(cd " + gitfolder + "; cd .. ; git log " + path + " | grep \"commit \" | cut -d \" \" -f 2)"
 	answer = commands.getoutput(cmd)
 
 	matchfound=False
 	# Ok do the thing we came here to do
-	print "========================="
+	printv( "=========================")
 	count=0
 	lines = answer.split()
 	# for each id 
@@ -134,12 +137,13 @@ def doTheThing():
 		# compare the md5 from our file against the latest version from github.com  
 		if md5 == md52:
 			# GREAT Success!!
-			print "Match found!"
-			print "Raw URL: " + fullUrl
-			print "Context URL: " + blobUrl
-			print "Found at " +str(count) + " of " + str(len(lines)) + " commits of that file "
-			print "If it is '1 of 32' then you have the latest version of the file"
-			print "If it is '30 of 32' then you have a very early version of the file"
+			print "Found at ["+str(count)+"/" + str(len(lines))+ "]: " + blobUrl
+			printv( "Match found!")
+			printv( "Raw URL: " + fullUrl )
+			printv( "Context URL: " + blobUrl)
+			printv( "Found at " +str(count) + " of " + str(len(lines)) + " commits of that file ")
+			printv( "If it is '1 of 32' then you have the latest version of the file")
+			printv( "If it is '30 of 32' then you have a very early version of the file")
 			matchfound=True
 			break
 
@@ -160,12 +164,17 @@ if __name__ == "__main__":
 	# Create argument parer object
 	parser = ArgumentParser(description="Finds out the version of a file you have in a git compliant repository")
 
-	# Adding options in
+	# Adding positional items (THESE ARE REQUIRED)
 	parser.add_argument("file", help="File to check version of")
 	parser.add_argument("gitdir", help="Directory of local git repository")
 
+	# Adding optional items
+	parser.add_argument("-v", "--verbose", action="store_true",help="increase output verbosity")
+
 	# parse the user input
 	args = parser.parse_args()
+
+	printv("Verbosity Enabled")
 
 	# check that the file exists
 	if os.path.isfile(args.file)==False:
