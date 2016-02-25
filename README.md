@@ -32,6 +32,7 @@ If you can now type "git-version" to obtain the help page you have succeeded.
 * This will create a directory "WordPress" in the current directory
 * execute git-version as shown below:
 
+<pre>
 > git-version.py license.txt WordPress/
 > Found git folder: WordPress/.git
 > Checking that file license.txt exists in the repo within WordPress/
@@ -58,6 +59,7 @@ If you can now type "git-version" to obtain the help page you have succeeded.
 > Found at 6 of 13 commits of that file 
 > If it is '1 of 32' then you have the latest version of the file
 >If it is '30 of 32' then you have a very early version of the file
+</pre>
 
 In this case the target license version was outdated!
 
