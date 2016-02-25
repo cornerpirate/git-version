@@ -14,12 +14,12 @@ of a file.
 * Future might support other providers so long as gitweb is ENABLED.
 
 # Installation 
-* git clone https://github.com/cornerpirate/git-version.git
+* `git clone https://github.com/cornerpirate/git-version.git`
 * You will need to place "git-version.py" into your executable path.
 * Modify your ~/.bashrc file to include the directory you just cloned.
-* For example, if you cloned it to "/root/git-version" 
-* Then add: "export PATH=$PATH:/root/Desktop/git-version/"
-* Then refresh your terminal: source ~/.bashrc
+* For example, if you cloned it to `/root/git-version` 
+* Then add: `export PATH=$PATH:/root/Desktop/git-version/`
+* Then refresh your terminal: `source ~/.bashrc`
 
 If you can now type "git-version" to obtain the help page you have succeeded.
 
