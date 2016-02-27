@@ -9,7 +9,7 @@ of a file.
 
 # Pre-requisites
 * Tested only on linux (specifically Kali linux)
-* Make sure that the OS has; wget, git (client), and md5sum installed (script checks path before running)
+* Make sure that the OS has; git (client), and md5sum installed (script checks path before running)
 * Your target must host its source code on github.com publicly.
 * Future might support other providers so long as gitweb is ENABLED.
 
