@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # calling: ./git-version.py <file-to-check> <directory-of-local-git>
-# for example: ./git-version.py drupal.js ./drupal7
+# for example: ./git-version.py licence.txt ./WordPress/
 # 
 # Copyright 2016 cornerpirate.
 #
@@ -128,12 +128,18 @@ def doTheThing():
 	# for each id 
 	for id in lines:
 		count=count+1
+
+		
 		# construct the full URL to the raw file on github.com
 		fullUrl = url + id + "/" + path
 		blobUrl = url + "blob/" + id + "/" + path
 		blobUrl = blobUrl.replace("raw.githubusercontent.com", "github.com") # hacky.. hacky.
-		# execute a wget to quietly download the file to stdout, and get the md5sum output
-		md52 = commands.getoutput("wget -qO - " + fullUrl + " | md5sum | cut -d \" \" -f 1")
+
+		# revert the file to specific id and get md5sum
+		cmd = "(cd " + gitfolder +  " ; cd ..;  git checkout " + id + " " + path + " ; cat " + path + " | md5sum  | cut -d \" \" -f 1)"
+		printv("Trying local git revert: " + cmd)
+		md52 = commands.getoutput(cmd)
+
 		# compare the md5 from our file against the latest version from github.com  
 		if md5 == md52:
 			# GREAT Success!!
@@ -147,6 +153,12 @@ def doTheThing():
 			matchfound=True
 			break
 
+	# update file back to the latest revision
+	printv("Updated target file to latest revision again")
+	cmd = "(cd " + gitfolder + " ; cd .. ; git checkout HEAD -- " + path + " )"
+	printv("Update to latest version again: " + cmd)
+	commands.getoutput(cmd)
+ 
 	# If we get here apparently the git archive does NOT have the same file
 	# Most likely the site admin has altered the file slightly or it is from 
 	# a different stream of development somehow.
@@ -207,12 +219,6 @@ if __name__ == "__main__":
 		print "========================="
 		print "You do not have the 'git' client in your path. Install it, or sort your path out"
 		sys.exit(-1)
-
-	# check that the OS has wget installed
-	if isToolInstalled("wget")==False:
-		parser.print_help()
-		print "========================="
-		print "You do not have 'wget' in your path. Install it, or sort your path out"
 
 	# check that the OS has md5sum installe
 	if isToolInstalled("md5sum")==False:
