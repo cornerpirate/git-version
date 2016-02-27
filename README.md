@@ -18,7 +18,7 @@ of a file.
 * You will need to place "git-version.py" into your executable path.
 * Modify your ~/.bashrc file to include the directory you just cloned.
 * For example, if you cloned it to `/root/git-version` 
-* Then add: `export PATH=$PATH:/root/Desktop/git-version/`
+* Then add: `export PATH=$PATH:/root/git-version/`
 * Then refresh your terminal: `source ~/.bashrc`
 
 If you can now type "git-version" to obtain the help page you have succeeded.
