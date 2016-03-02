@@ -78,6 +78,6 @@ for i in `cat txt-files.txt`; do wget https://targetsite/$i; done
 for f in `ls -a *.txt | cat`; do git-version.py $f WordPress/; done
 </pre>
 
-# Dislaimer
+# Disclaimer
 
 For research purposes only, do not use this on any target which you do not have permission to do so.
